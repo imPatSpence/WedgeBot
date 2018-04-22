@@ -1,70 +1,116 @@
-﻿using System.Threading.Tasks;
-using Discord;
-using System;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
-using Discord.Audio;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Reflection;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace WedgeBot
 {
     class Program
     {
-        public static void Main(string[] args)
-                    => new Program().MainAsync().GetAwaiter().GetResult();
+        static void Main(string[] args) => new Program().RunBotAsync().GetAwaiter().GetResult();
 
-     
-        public async Task MainAsync()
+        public static IConfiguration Configuration { get; set; }
+
+        private DiscordSocketClient _client;
+        
+        private CommandService _commands;
+        private IServiceProvider _services;
+
+        public async Task RunBotAsync()
         {
-            var client = new DiscordSocketClient();
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("config.json");
+            Configuration = builder.Build();
 
-            client.Log += Log;
+            string botToken = Configuration["discord:token"];
 
-            string totallySecureToken = "NDM1NjA5NjYyNzAwNjUwNDk3.DbbfqQ.ZF3ptkIVqj_JyiHwHKaIqQOuHc8";
+            _client = new DiscordSocketClient();
+            _commands = new CommandService();
 
-            await client.LoginAsync(TokenType.Bot, totallySecureToken);
+            _services = new ServiceCollection()
+                .AddSingleton(_client)
+                .AddSingleton(_commands)
+                .BuildServiceProvider();
 
-            client.MessageReceived += MessageReceived;
+            //event Subs
+            _client.Log += Log;
+            _client.UserJoined += AnnounceUserJoined;
 
+            //Register all Commands
+            await RegisterCommandsAsync();
 
-            await client.StartAsync();
+            await _client.LoginAsync(TokenType.Bot, botToken);
+            await _client.StartAsync();
 
-            // Block this task until the program is closed.
+            //So it doesn't end
             await Task.Delay(-1);
-        }
-
-        private async Task MessageReceived(SocketMessage message)
-        {
-            var channel = ((Discord.WebSocket.SocketGuildUser)message.Author).VoiceChannel;
-            IAudioClient client = await channel.ConnectAsync();
-
-            //var authorVoiceChannel = client. //message.Author.Id
-            if (message.Content == "!Wedge")
-            {
-
-                if (message.Author.Username == "Sik")
-                {
-                    await message.Channel.SendMessageAsync("Even you could do this, Sik");
-
-                }
-
-                else if (message.Author.Username == "Dm430")
-                {
-                    await message.Channel.SendMessageAsync("NO DEVIN, STAHP");
-
-                }
-                else
-                {
-                    await message.Channel.SendMessageAsync("Hi, I'm the best character in Star Wars!");
-                }
-                
-            }
 
         }
 
-
-        private Task Log(LogMessage msg)
+        private async Task AnnounceUserJoined(SocketGuildUser user)
         {
-            Console.WriteLine(msg.ToString());
+            var guild = user.Guild;
+            var channel = guild.DefaultChannel;
+
+            await channel.SendMessageAsync($"Welcome, {user.Mention} ");
+        }
+
+
+        private Task Log(LogMessage arg)
+        {
+            Console.WriteLine(arg);
+
             return Task.CompletedTask;
         }
+
+        public async Task RegisterCommandsAsync()
+        {
+            _client.Ready += SetGamePlayAsync;
+
+            //+=  Subscribes to Event
+            _client.MessageReceived += HandleCommandAsync;
+
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly());
+        }
+
+        private async Task HandleCommandAsync(SocketMessage arg)
+        {
+            var message = arg as SocketUserMessage;
+
+            if (message is null || message.Author.IsBot)
+            {
+                return;
+            }
+
+            int argPos = 0;
+
+            //Says wedge or mentions wedge
+            if (message.HasStringPrefix("!wedge", ref argPos) || message.HasMentionPrefix(_client.CurrentUser, ref argPos))
+            {
+                var context = new SocketCommandContext(_client, message);
+
+
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
+
+                if (!result.IsSuccess)
+                {
+                    Console.WriteLine(result.ErrorReason);
+
+                }
+
+            }
+        }
+
+        private async Task SetGamePlayAsync()
+        {
+            await _client.SetGameAsync("Destroying ALL Death Stars");
+        }
+
     }
 }
