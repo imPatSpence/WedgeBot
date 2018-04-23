@@ -24,8 +24,8 @@ namespace WedgeBot
         public async Task RunBotAsync()
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("config.json");
+                .AddEnvironmentVariables();
+
             Configuration = builder.Build();
 
             string botToken = Configuration["discord:token"];
@@ -48,7 +48,7 @@ namespace WedgeBot
             await _client.LoginAsync(TokenType.Bot, botToken);
             await _client.StartAsync();
 
-            //So it doesn't end
+            //So it doesn't end prog
             await Task.Delay(-1);
 
         }
@@ -90,7 +90,7 @@ namespace WedgeBot
 
             int argPos = 0;
 
-            //Says wedge or mentions wedge
+            //Say !wedge or mentions @wedge
             if (message.HasStringPrefix("!wedge", ref argPos) || message.HasMentionPrefix(_client.CurrentUser, ref argPos))
             {
                 var context = new SocketCommandContext(_client, message);

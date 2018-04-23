@@ -7,10 +7,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Discord.WebSocket;
+using WedgeBot.Services;
 
 namespace WedgeBot.Modules
 {
-    public class SimpleVoice: ModuleBase
+    public class Voice: ModuleBase
     {
 
 
@@ -30,8 +31,9 @@ namespace WedgeBot.Modules
             else
             {
                 _audioclient = await channel.ConnectAsync();
+                var ProcessYoutube = new ProcessYoutubeUrl();
 
-                await Play(staticUrl);
+                await ProcessYoutube.Play(staticUrl, _audioclient);
                 await LeaveChannel();
             }
         }
@@ -41,25 +43,6 @@ namespace WedgeBot.Modules
             await _audioclient.StopAsync();
         }
 
-        private async Task Play(string url)
-        {
-            var ffmpeg = CreateStream(url);
-            var output = ffmpeg.StandardOutput.BaseStream;
-            var stream = _audioclient.CreatePCMStream(AudioApplication.Mixed);
-            await output.CopyToAsync(stream);
-            await stream.FlushAsync();
-        }
-        private Process CreateStream(string url)
-        {
-            var ffmpeg = new ProcessStartInfo
-            {
-                FileName = "cmd.exe",
-                Arguments = $"/C youtube-dl -o - {url} | ffmpeg -i pipe:0 -ac 2 -f s16le -ar 48000 pipe:1",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-            };
-            return Process.Start(ffmpeg);
-        }
 
     }
 }
