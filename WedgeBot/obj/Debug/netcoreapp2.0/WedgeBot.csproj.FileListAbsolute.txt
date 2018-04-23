@@ -1,15 +1,13 @@
+C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.dll
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\ffmpeg.exe
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\opus.dll
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\youtube-dl.exe
-C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\config.json
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.deps.json
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.runtimeconfig.json
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.runtimeconfig.dev.json
-C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.dll
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\bin\Debug\netcoreapp2.0\WedgeBot.pdb
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.csproj.CoreCompileInputs.cache
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.AssemblyInfoInputs.cache
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.AssemblyInfo.cs
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.dll
 C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.pdb
-C:\Users\impat\source\repos\WedgeBot\WedgeBot\obj\Debug\netcoreapp2.0\WedgeBot.csprojResolveAssemblyReference.cache

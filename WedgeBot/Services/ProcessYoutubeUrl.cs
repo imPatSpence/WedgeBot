@@ -12,7 +12,8 @@ namespace WedgeBot.Services
     {
 
         public async Task Play(string url, IAudioClient audioClient)
-        {
+        { 
+            var test = YoutubeDownload(url);
             var ffmpeg = CreateStream(url);
             var output = ffmpeg.StandardOutput.BaseStream;
             var stream = audioClient.CreatePCMStream(AudioApplication.Mixed);
@@ -20,8 +21,22 @@ namespace WedgeBot.Services
             await stream.FlushAsync();
         }
 
-        public Process CreateStream(string url)
+        private Process YoutubeDownload(String url)
         {
+
+            
+            var download = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/C youtube-dl --cache-dir /videos/test {url}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+            };
+            return Process.Start(download);
+        }
+        private Process CreateStream(string url)
+        {
+            
             var ffmpeg = new ProcessStartInfo
             {
                 FileName = "cmd.exe",
